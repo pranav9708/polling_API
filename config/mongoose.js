@@ -1,8 +1,9 @@
 const mongoose=require('mongoose');
 const dotenv=require('dotenv').config();
 
-const dbURL=process.env.MONGODB_URL;
-const db=mongoose.connect(dbURL);
+const dbURL=process.env.mongodbURL;
+mongoose.connect(dbURL);
+const db=mongoose.connection;
 
 db.on('error',console.error.bind(console,"Error while connecting to Database"));
 

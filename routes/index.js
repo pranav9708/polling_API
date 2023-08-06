@@ -1,7 +1,7 @@
 const express = require('express');
 const router=express.Router();
 
-router.get('/questions',require('./question'));
-router.get('/options',require('./options'));
+router.use('/questions',require('./question'));
+// router.use('/options',require('./options'));
 
 module.exports = router;
