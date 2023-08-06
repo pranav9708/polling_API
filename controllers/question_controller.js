@@ -1,6 +1,7 @@
 const Question=require('../models/questions');
 const Option=require('../models/options');
 
+//controller function to create a new Question
 module.exports.createQuestion=async(req,res)=>{
     try{
         let question = await Question.create(req.body);
@@ -17,6 +18,7 @@ module.exports.createQuestion=async(req,res)=>{
     }
 }
 
+//controller function to add a new Option to a question using question's id
 module.exports.addOption=async(req,res)=>{
     try{
         let question =await Question.findById(req.params.id);
@@ -27,9 +29,11 @@ module.exports.addOption=async(req,res)=>{
                 votes:0
             });
 
+            //adding the option id dynamically to the options link to vote
             option.link_to_vote=`http://localhost:8000/options/${option._id}/add_vote`;
             option.save();
 
+            //saving the option to question
             question.options.push(option);
             question.save();
 
@@ -50,8 +54,10 @@ module.exports.addOption=async(req,res)=>{
     }
 }
 
+//controller function to view a question based on question's id
 module.exports.viewQuestion=async(req,res)=>{
     try{
+        //populating question with the options using .populate() function
         let question = await Question.findById(req.params.id).populate('options');
         if(question){
             return res.status(200).json({
@@ -71,10 +77,12 @@ module.exports.viewQuestion=async(req,res)=>{
     }
 }
 
+//controller function to delete a question based on question's id
 module.exports.deleteQuestion = async(req,res)=>{
     try{
         let question = await Question.findById(req.params.id);
         for(let option of question.options){
+            //preventing question deletion if even one of its option is already voted.
             if(option.votes>0){
                 return res.status(401).json({
                     message:"Question cannot be deleted as its options votes is greater than 0"
@@ -82,6 +90,7 @@ module.exports.deleteQuestion = async(req,res)=>{
             }
         }
 
+        //removing the option from options model before deleting the question
         for(let option of question.options){
             await Option.findByIdAndDelete(option._id);
         }
