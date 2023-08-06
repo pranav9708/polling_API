@@ -1,5 +1,5 @@
-const Question=require('../models/questions');
-const Option=require('../models/options');
+const Question=require('../../../models/questions');
+const Option=require('../../../models/options');
 
 //controller function to create a new Question
 module.exports.createQuestion=async(req,res)=>{
@@ -30,7 +30,7 @@ module.exports.addOption=async(req,res)=>{
             });
 
             //adding the option id dynamically to the options link to vote
-            option.link_to_vote=`http://localhost:8000/options/${option._id}/add_vote`;
+            option.link_to_vote=`http://localhost:8000/api/v1/options/${option._id}/add_vote`;
             option.save();
 
             //saving the option to question
@@ -80,7 +80,7 @@ module.exports.viewQuestion=async(req,res)=>{
 //controller function to delete a question based on question's id
 module.exports.deleteQuestion = async(req,res)=>{
     try{
-        let question = await Question.findById(req.params.id);
+        let question = await Question.findById(req.params.id).populate('options');
         for(let option of question.options){
             //preventing question deletion if even one of its option is already voted.
             if(option.votes>0){

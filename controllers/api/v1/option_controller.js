@@ -1,5 +1,5 @@
-const Question=require('../models/questions');
-const Option=require('../models/options');
+const Question=require('../../../models/questions');
+const Option=require('../../../models/options');
 
 //controller function to add vote to an option using option's id
 module.exports.addVote=async(req,res)=>{
